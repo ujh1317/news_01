@@ -1,9 +1,9 @@
 package com.example.news_01;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = findViewById(R.id.my_recycler_view);
+        mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-
 
         queue = Volley.newRequestQueue(this);
         getNews();
@@ -57,15 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Instantiate the RequestQueue.
 
-        String url ="http://newsapi.org/v2/top-headlines?country=kr&apiKey=d1d1fe0198e04d9a93ce88de143ef545";
+        String url = "http://newsapi.org/v2/top-headlines?country=kr&apiKey=d1d1fe0198e04d9a93ce88de143ef545";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-                        Log.d(" NEWS ", response);
 
                         try {
                             JSONObject jsonObj = new JSONObject(response);
@@ -75,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                             // response 를 NewsData Class 에 분류
                             List<NewsData> news = new ArrayList<>();
 
-                            for (int i=0, j=arrayArticles.length(); i < j; i++) {
+                            for (int i = 0, j = arrayArticles.length(); i < j; i++) {
                                 JSONObject obj = arrayArticles.getJSONObject(i);
 
                                 Log.d(" NEWS ", obj.toString());
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                             // specify an adapter (see also next example)
-                            mAdapter = new MyAdapter(news);
+                            mAdapter = new MyAdapter(news, MainActivity.this);
                             mRecyclerView.setAdapter(mAdapter);
 
                         } catch (JSONException e) {
