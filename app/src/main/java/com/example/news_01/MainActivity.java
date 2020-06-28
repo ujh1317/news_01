@@ -1,10 +1,15 @@
 package com.example.news_01;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray arrayArticles = jsonObj.getJSONArray("articles");
 
                             // response 를 NewsData Class 에 분류
-                            List<NewsData> news = new ArrayList<>();
+                            final List<NewsData> news = new ArrayList<>();
 
                             for (int i = 0, j = arrayArticles.length(); i < j; i++) {
                                 JSONObject obj = arrayArticles.getJSONObject(i);
@@ -79,14 +84,25 @@ public class MainActivity extends AppCompatActivity {
                                 NewsData newsData = new NewsData();
                                 newsData.setTitle(obj.getString("title"));
                                 newsData.setUrlToImage(obj.getString("urlToImage"));
-                                newsData.setContent(obj.getString("content"));
+                                newsData.setContent(obj.getString("description"));
 
                                 news.add(newsData);
                             }
 
 
                             // specify an adapter (see also next example)
-                            mAdapter = new MyAdapter(news, MainActivity.this);
+                            mAdapter = new MyAdapter(news, MainActivity.this, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Object obj = v.getTag();
+                                    if (obj != null) {
+                                        int position = (int) obj;
+                                        ((MyAdapter)mAdapter).getNews(position);
+                                        Intent intent = new Intent();
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
                             mRecyclerView.setAdapter(mAdapter);
 
                         } catch (JSONException e) {

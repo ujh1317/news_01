@@ -17,6 +17,7 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     private List<NewsData> mDataset;
+    private static View.OnClickListener onClickListener;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -26,18 +27,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView TextView_title;
         public TextView TextView_content;
         public SimpleDraweeView ImageView_title;
+        public View rootView;
 
         public MyViewHolder(View v) {
             super(v);
             TextView_title = v.findViewById(R.id.tv_title);
             TextView_content = v.findViewById(R.id.tv_content);
             ImageView_title = v.findViewById(R.id.iv_title);
+            rootView = v;
+
+            v.setClickable(true);
+            v.setEnabled(true);
+            v.setOnClickListener(onClickListener);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<NewsData> myDataset, Context context) {
+    public MyAdapter(List<NewsData> myDataset, Context context, View.OnClickListener onClick) {
         mDataset = myDataset;
+        onClickListener = onClick;
         Fresco.initialize(context);
     }
 
@@ -70,7 +78,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             Uri uri = Uri.parse(news.getUrlToImage());
 
         holder.ImageView_title.setImageURI(uri);
-
+        // tag
+        holder.rootView.setTag(position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -79,5 +88,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         // 삼항 연산자
         return mDataset == null ? 0 : mDataset.size();
+    }
+    public NewsData getNews(int position) {
+        return mDataset != null ? mDataset.get(position) : null;
     }
 }
